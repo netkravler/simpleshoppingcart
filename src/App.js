@@ -1,11 +1,24 @@
+import { useEffect, useState } from "react";
 import ProductCard from "./Components/Cards/ProductCard";
 import { GridSection } from "./Components/Sections/GridSection";
-import { useFetch } from "./Hooks/fetch";
+import ShoppingCart from "./Components/ShoppingCart";
+import useDemo from "./Hooks/useDemo";
+import { useFetch } from "./Hooks/useFetch";
+import useShoppingCart from "./Hooks/useShoppingCart";
 
 function App() {
-  const url = "https://dummyjson.com/products";
+  const { names } = useDemo("Niklas, Emma, Jacok");
+  const { increaseCartQuantity, decreaseCartQuantity, deleteProduct, returnAmount, shoppingCart } = useShoppingCart();
+
+  const url = "https://dummyjson.com/products?limit=8";
+
+  const [total, setTotal] = useState(0);
 
   const { apiData, loading, error } = useFetch(url, "products");
+
+  useEffect(() => {
+    setTotal(shoppingCart.reduce((acc, curr) => acc + curr.price * curr.amount, 0));
+  }, [shoppingCart]);
 
   if (loading) {
     return <div>Loading...</div>;
@@ -17,11 +30,13 @@ function App() {
 
   return (
     <>
-      <GridSection size="300px">
+      <GridSection size="400px">
         {apiData.map((item, i) => (
-          <ProductCard key={i} item={item} />
+          <ProductCard key={i} item={item} {...{ increaseCartQuantity, decreaseCartQuantity, returnAmount, deleteProduct }} />
         ))}
       </GridSection>
+      Total: dkr. {total}
+      <ShoppingCart />
     </>
   );
 }

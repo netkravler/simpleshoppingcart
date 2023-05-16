@@ -1,5 +1,32 @@
 import React from "react";
 import styled from "styled-components";
+import { FaTrash } from "react-icons/fa";
+
+const ProductCard = ({ item, increaseCartQuantity, decreaseCartQuantity, deleteProduct, returnAmount }) => {
+  const { thumbnail, title, description, price } = item;
+
+  console.log(item);
+  return (
+    <CardContainer>
+      <CardImage src={thumbnail} alt={title} />
+      <CardTitle>{title}</CardTitle>
+      <CardDescription>
+        {description} <br />
+      </CardDescription>
+      {returnAmount(item.id)}
+      <CardPrice>dk. {price}</CardPrice>
+      <CardButton onClick={() => increaseCartQuantity(item.id, item.price, item, 1)}>Køb</CardButton>
+      {returnAmount(item.id) > 0 && (
+        <>
+          <button onClick={() => decreaseCartQuantity(item.id)}>reducer</button>
+          <FaTrash onClick={() => deleteProduct(item.id)} />
+        </>
+      )}
+    </CardContainer>
+  );
+};
+
+export default ProductCard;
 
 const CardContainer = styled.div`
   display: grid;
@@ -36,29 +63,13 @@ const CardPrice = styled.p`
   margin: 0;
 `;
 
-// const CardButton = styled.button`
-//   padding: 10px 20px;
-//   font-size: 16px;
-//   font-weight: bold;
-//   background-color: #007bff;
-//   color: #fff;
-//   border: none;
-//   border-radius: 4px;
-//   cursor: pointer;
-// `;
-
-const ProductCard = ({ item }) => {
-  const { thumbnail, title, description, price } = item;
-  return (
-    <CardContainer>
-      <CardImage src={thumbnail} alt={title} />
-      <CardTitle>{title}</CardTitle>
-      <CardDescription>
-        {description} <br />
-      </CardDescription>
-      <CardPrice>dk. {price}</CardPrice>
-    </CardContainer>
-  );
-};
-
-export default ProductCard;
+const CardButton = styled.button`
+  padding: 10px 20px;
+  font-size: 16px;
+  font-weight: bold;
+  background-color: #007bff;
+  color: #fff;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+`;
